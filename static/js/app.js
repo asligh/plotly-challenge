@@ -66,7 +66,7 @@ async function main() {
         if(i === 0) ///build default option
         {
             let el = document.createElement("option");
-            el.textContent = "-select-";
+            el.textContent = "";
             el.value = -1;
             ddl.appendChild(el);        
         }
@@ -86,14 +86,13 @@ async function main() {
 
      sample_data_div.innerHTML='';
 
- 
      for (const [key, value] of Object.entries(meta)) 
      {
         const div = document.createElement("div");
+        div.className ='sample_meta';
         div.innerText = key + ":" + value;
-        sample_data_div.appendChild(div)
+        sample_data_div.appendChild(div);
     }
-
   }
 
   function getMetadataById(id)
