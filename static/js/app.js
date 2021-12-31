@@ -2,6 +2,7 @@ let data     = ''
 let names    = ''
 let metadata = ''
 let samples  = ''
+let sample_instance = ''
 
 async function init() {
     const response = await fetch("./data/samples.json");
@@ -117,11 +118,11 @@ function showBarChart(id)
     const otu_labels_idx     = 1;
     const sample_values_idx  = 2;
 
-    let sample_data = getSamplesByID(id);
+    sample_instance = getSamplesByID(id);
 
-    otu_ids       = sample_data[otu_ids_idx];
-    otu_labels    = sample_data[otu_labels_idx];
-    sample_values = sample_data[sample_values_idx];
+    otu_ids       = sample_instance[otu_ids_idx];
+    otu_labels    = sample_instance[otu_labels_idx];
+    sample_values = sample_instance[sample_values_idx];
 
     console.log(otu_ids);
     console.log(otu_labels);
@@ -150,6 +151,37 @@ function showBarChart(id)
     Plotly.newPlot("bar", trace);
 }
 
+function showBubbleChart(id)
+{
+    const otu_ids_idx        = 0;
+    const otu_labels_idx     = 1;
+    const sample_values_idx  = 2;
+
+    otu_ids       = sample_instance[otu_ids_idx];
+    otu_labels    = sample_instance[otu_labels_idx];
+    sample_values = sample_instance[sample_values_idx];
+
+    var trace = [{
+        x: otu_ids,
+        y: sample_values,
+        text: ['A<br>size: 40', 'B<br>size: 60', 'C<br>size: 80', 'D<br>size: 100'],
+        mode: 'markers',
+        marker: {
+          color: otu_ids,
+          size: sample_values
+        }
+      }];
+      
+      //#endregionvar layout = {
+        //showlegend: false,
+       // height: 600,
+       // width: 600
+      //};
+      
+      Plotly.newPlot('bubble', trace);
+
+}
+
 function getSamplesByID(id) {
 
     let sample_data   = '';
@@ -162,9 +194,12 @@ function getSamplesByID(id) {
 
             console.log('The selected record id is ' + value["id"]);
 
-            let otu_ids       = value["otu_ids"].slice(0,10);
-            let otu_labels    = value["otu_labels"].slice(0,10);
-            let sample_values = value["sample_values"].slice(0,10);
+            let otu_ids = value["otu_ids"].slice(0,10);
+
+            otu_ids = otu_ids.map(x=>'OTU ' + x.toString()).reverse()
+
+            let otu_labels    = value["otu_labels"].slice(0,10).reverse();
+            let sample_values = value["sample_values"].slice(0,10).reverse();
 
             sample_data = [otu_ids,otu_labels,sample_values];
 
@@ -182,7 +217,8 @@ function optionChanged(id) {
     else 
     {
         showMetadata(id);
-        showBarChart(id)
+        showBarChart(id);
+        showBubbleChart(id);
     }
 }
 
