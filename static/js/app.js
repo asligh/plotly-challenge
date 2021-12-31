@@ -1,65 +1,20 @@
 let data     = ''
+
 let names    = ''
 let metadata = ''
 let samples  = ''
-let sample_instance = ''
+
 
 async function init() {
     const response = await fetch("./data/samples.json");
     data = await response.json();
-    //console.log(data);
 
     // Create an array of each country's numbers
     names    = Object.values(data.names);
     metadata = Object.values(data.metadata);
     samples  = Object.values(data.samples);
 
-    //console.log(samples)
-
     bindDropdown(names);
-
-
-    //Plotly.newPlot("bar", null);
-
-
-
-    // Create an array of music provider labels
-    //const labels = Object.keys(data.us);
-
-    // Make a note to comment on Object.entries
-
-    // Display the default plot
-    //const trace = [{
-    // values: us,
-    //labels: labels,
-    //type: "pie"
-    //}];
-
-    //const layout = {
-    // height: 600,
-    //  width: 800
-    //};
-
-    //Plotly.newPlot("pie", trace, layout);
-
-    // On change to the DOM
-    document.querySelector("#selDataset").addEventListener("change", event => {
-
-        // Initialize an empty array for the country's data
-        //let data = [];
-
-        //if (event.target.value == 'us') {
-        //data = us;
-        //}
-        //else if (event.target.value == 'uk') {
-        //data = uk;
-        //}
-        //else if (event.target.value == 'canada') {
-        //data = canada;
-        //}
-
-        //Plotly.restyle("pie", "values", [data]);
-    });
 }
 
 //https://www.geeksforgeeks.org/how-to-create-a-dropdown-list-with-array-values-using-javascript/
@@ -118,35 +73,23 @@ function showBarChart(id)
     const otu_labels_idx     = 1;
     const sample_values_idx  = 2;
 
-    sample_instance = getSamplesByID(id);
+    let sample_instance = getSamplesByID(id);
 
-    otu_ids       = sample_instance[otu_ids_idx];
-    otu_labels    = sample_instance[otu_labels_idx];
-    sample_values = sample_instance[sample_values_idx];
+    let otu_ids_bc        = sample_instance[otu_ids_idx].map(x=>'OTU ' + x.toString()).slice(0,10).reverse();;
+    let otu_labels_bc     = sample_instance[otu_labels_idx].slice(0,10).reverse();
+    let sample_values_bc  = sample_instance[sample_values_idx].slice(0,10).reverse();;
 
-    console.log(otu_ids);
-    console.log(otu_labels);
-    console.log(sample_values);
+    console.log(otu_ids_bc);
+    console.log(otu_labels_bc);
+    console.log(sample_values_bc);
 
     trace = [{
-                x: sample_values,
-                y: otu_ids,
+                x: sample_values_bc,
+                y: otu_ids_bc,
                 type: 'bar',
-                text: otu_labels,
+                text: otu_labels_bc,
                 orientation:'h',
             }];
-
-   //Display the default plot
-    // const trace = [{
-    //                    values: otu_ids,
-    //                    labels: sample_values,
-    //                    type: "bar"
-    //                 }];
-
-    //const layout = {
-                       //height: 600,
-                       //width: 800
-                   //};
 
     Plotly.newPlot("bar", trace);
 }
@@ -157,9 +100,12 @@ function showBubbleChart(id)
     const otu_labels_idx     = 1;
     const sample_values_idx  = 2;
 
-    otu_ids       = sample_instance[otu_ids_idx];
-    otu_labels    = sample_instance[otu_labels_idx];
-    sample_values = sample_instance[sample_values_idx];
+    
+    let sample_instance = getSamplesByID(id);
+
+    let otu_ids       = sample_instance[otu_ids_idx];
+    let otu_labels    = sample_instance[otu_labels_idx];
+    let sample_values = sample_instance[sample_values_idx];
 
     var trace = [{
         x: otu_ids,
@@ -172,14 +118,7 @@ function showBubbleChart(id)
         }
       }];
       
-      //#endregionvar layout = {
-        //showlegend: false,
-       // height: 600,
-       // width: 600
-      //};
-      
       Plotly.newPlot('bubble', trace);
-
 }
 
 function getSamplesByID(id) {
@@ -194,12 +133,9 @@ function getSamplesByID(id) {
 
             console.log('The selected record id is ' + value["id"]);
 
-            let otu_ids = value["otu_ids"].slice(0,10);
-
-            otu_ids = otu_ids.map(x=>'OTU ' + x.toString()).reverse()
-
-            let otu_labels    = value["otu_labels"].slice(0,10).reverse();
-            let sample_values = value["sample_values"].slice(0,10).reverse();
+            let otu_ids       = value["otu_ids"]
+            let otu_labels    = value["otu_labels"]
+            let sample_values = value["sample_values"]
 
             sample_data = [otu_ids,otu_labels,sample_values];
 
