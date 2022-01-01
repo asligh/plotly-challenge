@@ -14,20 +14,24 @@ async function init() {
     metadata = Object.values(data.metadata);
     samples  = Object.values(data.samples);
 
-    bindDropdown(names);
+    first_id = bindDropdown(names);
+
+    load_page(first_id);
 }
 
 //https://www.geeksforgeeks.org/how-to-create-a-dropdown-list-with-array-values-using-javascript/
 function bindDropdown(names) {
-    ddl = document.getElementById('selDataset')
 
-    for (i = 0; i < names.length; i++) {
-        if (i === 0) ///build default option
+    first_id = 0;
+
+    ddl = document.getElementById('selDataset');
+
+    for (i = 0; i < names.length; i++) 
+    {
+
+        if(i===0)
         {
-            let el = document.createElement("option");
-            el.textContent = "";
-            el.value = -1;
-            ddl.appendChild(el);
+            first_id = names[i];
         }
 
         let el = document.createElement("option");
@@ -35,6 +39,8 @@ function bindDropdown(names) {
         el.value = names[i];
         ddl.appendChild(el);
     }
+
+    return first_id;
 }
 
 function showMetadata(id) {
@@ -79,9 +85,9 @@ function showBarChart(id)
     let otu_labels_bc     = sample_instance[otu_labels_idx].slice(0,10).reverse();
     let sample_values_bc  = sample_instance[sample_values_idx].slice(0,10).reverse();;
 
-    console.log(otu_ids_bc);
-    console.log(otu_labels_bc);
-    console.log(sample_values_bc);
+    //console.log(otu_ids_bc);
+    //console.log(otu_labels_bc);
+    //console.log(sample_values_bc);
 
     trace = [{
                 x: sample_values_bc,
@@ -146,20 +152,16 @@ function getSamplesByID(id) {
     return sample_data;
 }
 
-function optionChanged(id) {
-    if (id === -1) {
-        reset_page();
-    }
-    else 
-    {
-        showMetadata(id);
-        showBarChart(id);
-        showBubbleChart(id);
-    }
+function optionChanged(id) 
+{
+    load_page(id)
 }
 
-function reset_page() {
-    alert("in reset page");
+function load_page(id)
+{
+    showMetadata(id);
+    showBarChart(id);
+    showBubbleChart(id);
 }
 
 init();
